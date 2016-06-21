@@ -3,79 +3,62 @@ public class Project{
     public static void main (String[] args){
  	
 		if (args.length == 3) {
-		
-			System.out.println(args[0]);		
-			System.out.println(args[1]);
-			System.out.println(args[2]);
-		
-			int vet[] = new int[Integer.parseInt(args[0])];
+			
+			int carga[] = new int[3];
+			carga[0] = Integer.parseInt(args[0]);
+			carga[1] = Integer.parseInt(args[1]);
+			carga[2] = Integer.parseInt(args[2]);
 			
 			
-			int vet1[] = cria(Integer.parseInt(args[0]), 0);
-			int vet2[] = cria(Integer.parseInt(args[0]), 1);
-			int vet3[] = cria(Integer.parseInt(args[0]), 2);
+			for (int i = 0; i < carga.length; i++) {
+				for (int j = 0; j < carga.length; j++) {
+					String[][] resultadoParcial = resultado(carga[i], j);
+					exibeMatriz(resultadoParcial);
+				}
+			}
 			
-			int vet4[] = cria(Integer.parseInt(args[1]), 0);
-			int vet5[] = cria(Integer.parseInt(args[1]), 1);
-			int vet6[] = cria(Integer.parseInt(args[1]), 2);
-			
-			int vet7[] = cria(Integer.parseInt(args[2]), 0);
-			int vet8[] = cria(Integer.parseInt(args[2]), 1);
-			int vet9[] = cria(Integer.parseInt(args[2]), 2);
-	 
-			//modo ordenado
-			System.out.println("Metodo Aleatorio");
-			System.out.println("O Tempo de shell foi: " + shell(vet1));
-			//============================================================================
-			//modo ordenado
-			System.out.println("Metodo Inverso");
-			System.out.println("O Tempo de shell foi: " + shell(vet2));
-			//=============================================================================
-			System.out.println("Metodo Ordenado");
-			System.out.println("O Tempo de shell foi: " + shell(vet3));
-			
-			
-			//modo ordenado
-			System.out.println("Metodo Aleatorio");
-			System.out.println("O Tempo de shell foi: " + shell(vet4));
-			//============================================================================
-			//modo ordenado
-			System.out.println("Metodo Inverso");
-			System.out.println("O Tempo de shell foi: " + shell(vet5));
-			//=============================================================================
-			System.out.println("Metodo Ordenado");
-			System.out.println("O Tempo de shell foi: " + shell(vet6));
-			
-			
-			//modo ordenado
-			System.out.println("Metodo Aleatorio");
-			System.out.println("O Tempo de shell foi: " + shell(vet7));
-			//============================================================================
-			//modo ordenado
-			System.out.println("Metodo Inverso");
-			System.out.println("O Tempo de shell foi: " + shell(vet8));
-			//=============================================================================
-			System.out.println("Metodo Ordenado");
-			System.out.println("O Tempo de shell foi: " + shell(vet9));
-			
-			
-			
-		}else {
+		} else {
 			System.out.println("Informe todos os parametros");
+			System.out.println("\t" + "-h exibe ajuda.");
 		}
 		
     }
  
- 
-     public static int[] cria(int N, int tipo) {
+  //===================================================================================================
+    /**
+     * Essa função recebe a carga de trabalho e retorna uma matriz com os resultados dos testes.
+     * 
+     * @param int carga: carga de tabalho.
+     * @return String[][]: matriz com os resultados dos testes.
+     */
+    public static String[][] resultado (int carga, int tipo) {
+    	
+    	String resultado[][] = new String[30][2];
+    	
+    	for (int i = 0; i < resultado.length ; i++) {
+    		for (int j = 0; j < resultado[0].length; j++) {
+    			resultado[i][0] = Integer.toString(carga);
+    			resultado[i][1] = Double.toString(shell(cria(carga, tipo)));
+    		}
+    	}
+    	
+    	return resultado;
+    	
+    }
+    /**
+     * Esse métodos cria um vetor de inteiros com tamanho e tipo informados como parametro.
+     * 
+     * Tipo = 0 para numeros aleatórios
+     * 1 para vetor ordenado
+     * 2 para vetor em ordem inversa
+     * 
+     * @param int tipo: tipo de vetor que sera criado
+     * @return int vet[]: vetor de inteiros com o tamanho e tipo informados.
+     */
+    public static int[] cria(int N, int tipo) {
         
 		int vet[] = new int[N];
 		
-		// tipo: 
-        //      0 para numeros aleat??s
-        //      1 para vetor ordenado
-        //      2 para vetor em ordem inversa
-  
         switch (tipo) {
             case 0:
                 for (int i = 0; i < N; i++) {
@@ -95,10 +78,17 @@ public class Project{
         }
         return vet;
     }
-     
-//===============================================================================================================
-      public static double shell(int[] vet) {
-        double start = System.currentTimeMillis();
+     /**
+      * Esse método recebe um vetor e ordena utilizando o algoritmo shell sort e
+      * retorna o seu tempo de execução.
+      * 
+      * @param Int vet: vetor com os dados a serem ordenados.
+      * 
+      * @return double: retorna o tempo de execução em millisegundos
+      * 
+      */
+    public static long shell(int[] vet) {
+        long start = System.currentTimeMillis();
         int h = 1;
         int n = vet.length;
         while (h < n) {
@@ -118,8 +108,24 @@ public class Project{
             }
             h = h / 2;
         }
-        double finish = System.currentTimeMillis();
-        double total = finish - start;
+        long finish = System.currentTimeMillis();
+        long total = finish - start;
         return total;
     }
+
+    public static void exibeMatriz(String[][] matriz) {
+    	
+    	for (int i = 0; i < matriz.length; i++) {
+    		for (int j = 0; j < matriz[0].length; j++) {
+    			
+    			if (j != (matriz[0].length - 1)) {
+    				System.out.print(matriz[i][j] + " , ");
+    			} else {
+    				System.out.print(matriz[i][j]);
+    			}
+    		}
+    		System.out.println();
+    	}
+    }
+
 }
