@@ -1,8 +1,20 @@
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Project{
  
     public static void main (String[] args){
  	
 		if (args.length == 3) {
+			
+			Path caminho = Paths.get(System.getProperty("user.home") + "/ProjetoPEE/resultados.csv");
+			
+			ArrayList<String> list = new ArrayList<>();
+			list.add("carga, tipo.vetor, tempo");
 			
 			int carga[] = new int[3];
 			carga[0] = Integer.parseInt(args[0]);
@@ -12,12 +24,33 @@ public class Project{
 			
 			for (int i = 0; i < carga.length; i++) {
 				for (int j = 0; j < carga.length; j++) {
-					String[][] resultadoParcial = resultado(carga[i], j);
-					exibeMatriz(resultadoParcial);
+					resultado(list,carga[i], j);
 				}
 			}
 			
-		} else {
+			String listString = listToString(list);
+			
+			try {
+				
+				if (Files.exists(caminho.getParent()))
+					System.out.println("Pasta existe");
+				else
+					Files.createDirectory(caminho.getParent());
+				
+				Files.write(caminho, listString.getBytes());
+				
+				System.out.println("Arquivo gerado com sucesso!");
+				
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		} else if (args.length == 1 && args[0].equals("-h")){
+			System.out.println("Esse comando recebe como parametro três inteiros, cada um representando sua carga de trabalho. Por exemplo:");
+			System.out.println("\t>java Project 5000 10000 20000");
+			System.out.println("Nesse exmplo o programa vai rodar com uma carga de trabalho de 5000, 10000, 20000 elementos.");
+			
+		}else {
 			System.out.println("Informe todos os parametros");
 			System.out.println("\t" + "-h exibe ajuda.");
 		}
@@ -27,22 +60,32 @@ public class Project{
   //===================================================================================================
     /**
      * Essa função recebe a carga de trabalho e retorna uma matriz com os resultados dos testes.
-     * 
+     * @author Caio de Freitas Adriano
+	 *
+	 * @param ArrayList list: Lista onde sera armazenado os resultados.
      * @param int carga: carga de tabalho.
-     * @return String[][]: matriz com os resultados dos testes.
+	 * @param int tipo : Tipo de vetor que sera criado
      */
-    public static String[][] resultado (int carga, int tipo) {
+    public static void resultado (ArrayList<String> list, int carga, int tipo) {
     	
-    	String resultado[][] = new String[30][2];
+		String vetorTipo;
+		
+		switch(tipo) {
+			case 1:
+				vetorTipo = "ordenado";
+				break;
+			case 2:
+				vetorTipo = "inverso";
+				break;
+			default :
+				vetorTipo = "aleatório";
+				break;
+		}
     	
-    	for (int i = 0; i < resultado.length ; i++) {
-    		for (int j = 0; j < resultado[0].length; j++) {
-    			resultado[i][0] = Integer.toString(carga);
-    			resultado[i][1] = Double.toString(shell(cria(carga, tipo)));
-    		}
-    	}
+    	for (int i = 0; i < 30; i++) {
+			list.add(carga + ", " + vetorTipo + ", " + shell(cria(carga, tipo)));
+		}
     	
-    	return resultado;
     	
     }
     /**
@@ -79,8 +122,8 @@ public class Project{
         return vet;
     }
      /**
-      * Esse método recebe um vetor e ordena utilizando o algoritmo shell sort e
-      * retorna o seu tempo de execução.
+      * Esse método recebe um vetor de inteiros como parametro e o ordena utilizando o algoritmo shell sort
+      * retornando o seu tempo de execução.
       * 
       * @param Int vet: vetor com os dados a serem ordenados.
       * 
@@ -112,20 +155,24 @@ public class Project{
         long total = finish - start;
         return total;
     }
-
-    public static void exibeMatriz(String[][] matriz) {
+	/**
+	 * Essa função recebe uma lista do tipo String e a transforma em uma String
+	 *
+	 * @author Caio de Freitas Adriano
+	 *
+	 * @param ArrayList<String> list: lista com todos os resultados do teste.
+	 
+	 * @return String listString: lista convertida em uma unica String.
+	 */
+    public static String listToString(ArrayList<String> list) {
     	
-    	for (int i = 0; i < matriz.length; i++) {
-    		for (int j = 0; j < matriz[0].length; j++) {
-    			
-    			if (j != (matriz[0].length - 1)) {
-    				System.out.print(matriz[i][j] + " , ");
-    			} else {
-    				System.out.print(matriz[i][j]);
-    			}
-    		}
-    		System.out.println();
-    	}
+		String listString = "";
+		
+    	for (String l : list) {
+			listString += l + "\n";
+		}
+		
+		return listString;
     }
 
 }
